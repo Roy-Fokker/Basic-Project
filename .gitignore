@@ -1,0 +1,10 @@
+# cmake build directory
+build/
+CMakeCache.txt
+CMakeFiles/
+
+# vscode and visual studio specific
+.vscode/
+.vs/
+CMake*.json
+*.user
