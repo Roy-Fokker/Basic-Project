@@ -1,3 +1,6 @@
+# ignore emacs files
+backup/
+
 # cmake build directory
 build/
 CMakeCache.txt
