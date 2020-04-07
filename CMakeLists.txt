@@ -13,6 +13,19 @@ set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin/")
 project (Experiment
         LANGUAGES CXX)
 
+# Project Configuration Interface
+add_library(project_configuration INTERFACE)
+
+# Compile using specified features
+target_compile_features(project_configuration
+    INTERFACE
+        cxx_std_17)
+
+# Load MSVC specific settings
+include(cmake/msvc_settings.cmake)
+set_msvc_project_configuration(project_configuration)
+
+
 # 3rd Party libaries being used by this project/executable/library
 find_package(fmt)
 
@@ -22,11 +35,9 @@ add_executable(cpptst)
 target_sources(cpptst
     PRIVATE
         main.cpp)
-# Compile using specified features
-target_compile_features(cpptst
-    PRIVATE
-        cxx_std_17)
+
 # Link with 3rd Party libraries
 target_link_libraries(cpptst
     PRIVATE
+        project_configuration
         fmt::fmt)

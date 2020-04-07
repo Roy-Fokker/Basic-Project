@@ -11,3 +11,6 @@ CMakeFiles/
 .vs/
 CMake*.json
 *.user
+
+# VS Code ionide extension 
+.ionide/
