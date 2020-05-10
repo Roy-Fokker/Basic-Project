@@ -2,3 +2,77 @@
 #+SUBTITLE: Basic CMake Project
 #+OPTIONS: H:1 toc:t num:nil
 
+* Motivation
+  Need a simple cmake project to get started? Something quick and simple?
+
+* Project Structure
+  The project is structued in following manner.
+  #+begin_export ascii
+  Root
+    ├─ .gitignore
+    ├─ CMakeLists.txt
+    ├─ main.cpp
+    |
+    ├─ .vscode
+    │  └ launch.json
+    ├─ build
+    └─ cmake
+       ├ msvc_settings.cmake
+       └ vcpkg.cmake
+  #+end_export
+
+* Files
+** ~CMakeLists.txt~
+   This is project's main cmake file.
+
+   As per recommended practice, this cmake file specifies the minimum version
+   of CMake you must have installed.
+   #+INCLUDE: "CMakeLists.txt" :lines "-2" src cmake
+
+   This project uses [[https://github.com/microsoft/vcpkg][vcpkg]] to get external libraries to use. This specific sample
+   uses =fmt= library installed via =vcpkg=. The CMake toolchain file for vcpkg is
+   loaded via ~cmake/vcpkg.cmake~.
+   #+INCLUDE: "CMakeLists.txt" :lines "2-5" src cmake
+
+   Project was setup for windows. So if you are not on Windows, below doesn't apply to you.
+   #+INCLUDE: "CMakeLists.txt" :lines "5-8" src cmake
+
+   Need to tell CMake to not pollute the source directory with build outputs.
+   #+INCLUDE: "CMakeLists.txt" :lines "8-11" src cmake
+
+   Next we create Project, which can contain multiple executables and/or libraries.
+   #+INCLUDE: "CMakeLists.txt" :lines "11-15" src cmake
+
+   Create an interface library and using the function exposed by ~cmake/msvc_settings.cmake~ tell 
+   CMake to modify this interface library with MSVC specific settings, which than then be reused
+   by other executables and libraries. This interface also hold some compiler settings here, like
+   setting C++ Standard version to be C++17.
+   #+INCLUDE: "CMakeLists.txt" :lines "15-26" src cmake
+
+   Lastly, we are ready to add our executable, for which we need =fmt= library. The executable 
+   in the sample is called =cpptst= and uses ~main.cpp~ as source. Note the project_configuration
+   is used as if it was library.
+   #+INCLUDE: "CMakeLists.txt" :lines "27-" src cmake
+
+** ~cmake/msvc_settings.cmake~
+   This file exposes a function that basically does 3 things for a given project,
+   - MSVC compiler flags,
+     #+INCLUDE: "cmake/msvc_settings.cmake" :lines "6-12" src cmake
+   - Linker option so that MSVC always uses =main= as program entry point. Even when using 
+     #+INCLUDE: "cmake/msvc_settings.cmake" :lines "12-16" src cmake
+   - Definitions for Windows
+     #+INCLUDE: "cmake/msvc_settings.cmake" :lines "17-23" src cmake
+  
+** ~cmake/vcpkg.cmake~
+   This file will tell CMake about =vcpkg= toolchain file, and how to find it.
+   For this to work you have to setup =VCPKG_ROOT= environment variable, with value to 
+   where =vcpkg= is installed.
+   #+INCLUDE: "cmake/vcpkg.cmake" :lines "3-" src cmake
+
+** ~main.cpp~
+   This is very very simple C++ program, it uses =fmt= and =nanorange= libraries. Both installed
+   via =vcpkg=. As =nanorange= is a header only library, we don't necessarily need to add it to 
+   ~CMakeLists.txt~.
+   #+INCLUDE: "main.cpp" src cmake
+   
+   

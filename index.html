@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2020-05-09 Sat 21:16 -->
+<!-- 2020-05-09 Sat 22:17 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Swap Buffer</title>
@@ -9,11 +9,11 @@
 <meta name="author" content="Neel Raiyani [Roy Fokker]">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="css/theme.css" rel="stylesheet" type="text/css">
+<link href="/css/theme.css" rel="stylesheet" type="text/css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.18.0/min/vs/loader.js"></script>
-<script src="js/monaco-editor-code-block.js"></script>
-<script src="js/helper.js"></script>
+<script src="/js/monaco-editor-code-block.js"></script>
+<script src="/js/helper.js"></script>
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -66,11 +66,239 @@ for the JavaScript code in this tag.
 <header>
 <h1 class="title">Swap Buffer</h1>
 <p class="subtitle">Basic CMake Project</p>
-</header>
+</header><nav id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgc4b30f9">Motivation</a></li>
+<li><a href="#org21d5366">Project Structure</a></li>
+<li><a href="#org07c2dc0">Files</a></li>
+</ul>
+</div>
+</nav>
+
+<div id="outline-container-orgc4b30f9" class="outline-2">
+<h2 id="orgc4b30f9">Motivation</h2>
+<div class="outline-text-2" id="text-orgc4b30f9">
+<p>
+Need a simple cmake project to get started? Something quick and simple?
+</p>
+</div>
+</div>
+
+<div id="outline-container-org21d5366" class="outline-2">
+<h2 id="org21d5366">Project Structure</h2>
+<div class="outline-text-2" id="text-org21d5366">
+<p>
+The project is structued in following manner.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org07c2dc0" class="outline-2">
+<h2 id="org07c2dc0">Files</h2>
+<div class="outline-text-2" id="text-org07c2dc0">
+</div>
+<ul class="org-ul">
+<li><a id="orgb4e9dfc"></a><code>CMakeLists.txt</code><br>
+<div class="outline-text-3" id="text-orgb4e9dfc">
+<p>
+This is project's main cmake file.
+</p>
+
+<p>
+As per recommended practice, this cmake file specifies the minimum version
+of CMake you must have installed.
+</p>
+<div class="org-src-container">
+<pre class="src src-cmake"><span style="color: #c080d0;">cmake_minimum_required</span><span style="color: #ff8c00;">(</span>VERSION 3.16<span style="color: #ff8c00;">)</span>
+</pre>
+</div>
+
+<p>
+This project uses <a href="https://github.com/microsoft/vcpkg">vcpkg</a> to get external libraries to use. This specific sample
+uses <code>fmt</code> library installed via <code>vcpkg</code>. The CMake toolchain file for vcpkg is
+loaded via <code>cmake/vcpkg.cmake</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-cmake"><span style="color: #cd8b00;"># Include vcpkg toolchain file.</span>
+<span style="color: #c080d0;">include</span><span style="color: #ff8c00;">(</span>cmake/vcpkg.cmake<span style="color: #ff8c00;">)</span>
+</pre>
+</div>
+
+<p>
+Project was setup for windows. So if you are not on Windows, below doesn't apply to you.
+</p>
+<div class="org-src-container">
+<pre class="src src-cmake"><span style="color: #cd8b00;"># Include MSVC Settings file.</span>
+<span style="color: #c080d0;">include</span><span style="color: #ff8c00;">(</span>cmake/msvc_settings.cmake<span style="color: #ff8c00;">)</span>
+</pre>
+</div>
+
+<p>
+Need to tell CMake to not pollute the source directory with build outputs.
+</p>
+<div class="org-src-container">
+<pre class="src src-cmake"><span style="color: #cd8b00;"># Place build output to build/bin directory</span>
+<span style="color: #c080d0;">set</span><span style="color: #ff8c00;">(</span>EXECUTABLE_OUTPUT_PATH <span style="color: #ffcd8b; background-color: #404040;">"${</span>CMAKE_BINARY_DIR<span style="color: #ffcd8b; background-color: #404040;">}/bin/"</span><span style="color: #ff8c00;">)</span>
+</pre>
+</div>
+
+<p>
+Next we create Project, which can contain multiple executables and/or libraries.
+</p>
+<div class="org-src-container">
+<pre class="src src-cmake"><span style="color: #cd8b00;"># Project name and language</span>
+<span style="color: #c080d0;">project</span> <span style="color: #ff8c00;">(</span>Basic_Project
+        LANGUAGES CXX<span style="color: #ff8c00;">)</span>
+</pre>
+</div>
+
+<p>
+Create an interface library and using the function exposed by <code>cmake/msvc_settings.cmake</code> tell 
+CMake to modify this interface library with MSVC specific settings, which than then be reused
+by other executables and libraries. This interface also hold some compiler settings here, like
+setting C++ Standard version to be C++17.
+</p>
+<div class="org-src-container">
+<pre class="src src-cmake"><span style="color: #cd8b00;"># Project Configuration Interface</span>
+<span style="color: #c080d0;">add_library</span><span style="color: #ff8c00;">(</span>project_configuration INTERFACE<span style="color: #ff8c00;">)</span>
+
+<span style="color: #cd8b00;"># Compile using specified features</span>
+<span style="color: #c080d0;">target_compile_features</span><span style="color: #ff8c00;">(</span>project_configuration
+    INTERFACE
+        cxx_std_17<span style="color: #ff8c00;">)</span>
+
+<span style="color: #cd8b00;"># Load MSVC specific settings</span>
+<span style="color: #c080d0;">set_msvc_project_configuration</span><span style="color: #ff8c00;">(</span>project_configuration<span style="color: #ff8c00;">)</span>
+</pre>
+</div>
+
+<p>
+Lastly, we are ready to add our executable, for which we need <code>fmt</code> library. The executable 
+in the sample is called <code>cpptst</code> and uses <code>main.cpp</code> as source. Note the project_configuration
+is used as if it was library.
+</p>
+<div class="org-src-container">
+<pre class="src src-cmake"><span style="color: #cd8b00;"># 3rd Party libaries being used by this project/executable/library</span>
+<span style="color: #c080d0;">find_package</span><span style="color: #ff8c00;">(</span>fmt<span style="color: #ff8c00;">)</span>
+
+<span style="color: #cd8b00;"># Create executable</span>
+<span style="color: #c080d0;">add_executable</span><span style="color: #ff8c00;">(</span>cpptst<span style="color: #ff8c00;">)</span>
+<span style="color: #cd8b00;"># Add sources to above executable</span>
+<span style="color: #c080d0;">target_sources</span><span style="color: #ff8c00;">(</span>cpptst
+    PRIVATE
+        main.cpp<span style="color: #ff8c00;">)</span>
+
+<span style="color: #cd8b00;"># Link with 3rd Party libraries</span>
+<span style="color: #c080d0;">target_link_libraries</span><span style="color: #ff8c00;">(</span>cpptst
+    PRIVATE
+        project_configuration
+        fmt::fmt<span style="color: #ff8c00;">)</span>
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org923f881"></a><code>cmake/msvc_settings.cmake</code><br>
+<div class="outline-text-3" id="text-org923f881">
+<p>
+This file exposes a function that basically does 3 things for a given project,
+</p>
+<ul class="org-ul">
+<li><p>
+MSVC compiler flags,
+</p>
+<div class="org-src-container">
+<pre class="src src-cmake"><span style="color: #c080d0;">set</span><span style="color: #ff8c00;">(</span>MSVC_COMPILER_FLAGS
+        /W3             <span style="color: #cd8b00;"># Enable all warnings</span>
+        /permissive-    <span style="color: #cd8b00;"># enable conformance mode</span>
+        /Zc:__cplusplus <span style="color: #cd8b00;"># report C++ version correctly</span>
+<span style="color: #ff8c00;">)</span>
+</pre>
+</div></li>
+<li><p>
+Linker option so that MSVC always uses <code>main</code> as program entry point. Even when using 
+</p>
+<div class="org-src-container">
+<pre class="src src-cmake"><span style="color: #c080d0;">set</span><span style="color: #ff8c00;">(</span>MSVC_LINKER_FLAGS
+    /ENTRY:mainCRTStartup <span style="color: #cd8b00;"># use int main() as entry point.</span>
+<span style="color: #ff8c00;">)</span>
+</pre>
+</div></li>
+<li><p>
+Definitions for Windows
+</p>
+<div class="org-src-container">
+<pre class="src src-cmake"><span style="color: #c080d0;">set</span><span style="color: #ff8c00;">(</span>MSVC_COMPILE_DEFINITIONS
+        UNICODE _UNICODE    <span style="color: #cd8b00;"># Windows.h use UNICODE</span>
+        _SILENCE_CXX17_C_HEADER_DEPRECATION_WARNING <span style="color: #cd8b00;"># disable C header complaints</span>
+        NOMINMAX            <span style="color: #cd8b00;"># Don't use Windows.h min/max</span>
+        WIN32_LEAN_AND_MEAN <span style="color: #cd8b00;"># Trim it down.</span>
+<span style="color: #ff8c00;">)</span>
+</pre>
+</div></li>
+</ul>
+</div>
+</li>
+
+<li><a id="orge6900c1"></a><code>cmake/vcpkg.cmake</code><br>
+<div class="outline-text-3" id="text-orge6900c1">
+<p>
+This file will tell CMake about <code>vcpkg</code> toolchain file, and how to find it.
+For this to work you have to setup <code>VCPKG_ROOT</code> environment variable, with value to 
+where <code>vcpkg</code> is installed.
+</p>
+<div class="org-src-container">
+<pre class="src src-cmake"><span style="color: #808bed;">if</span><span style="color: #ff8c00;">(</span>DEFINED PROJECT_NAME<span style="color: #ff8c00;">)</span>
+    <span style="color: #c080d0;">message</span><span style="color: #ff8c00;">(</span>FATAL_ERROR <span style="color: #ffcd8b; background-color: #404040;">"[Error]: Vcpkg.cmake must be included before the project() directive is first called."</span><span style="color: #ff8c00;">)</span>
+<span style="color: #808bed;">elseif</span><span style="color: #ff8c00;">(</span>DEFINED ENV<span style="color: #ff1493;">{</span>VCPKG_ROOT<span style="color: #ff1493;">}</span> AND NOT DEFINED CMAKE_TOOLCHAIN_FILE<span style="color: #ff8c00;">)</span>
+    <span style="color: #c080d0;">set</span><span style="color: #ff8c00;">(</span>CMAKE_TOOLCHAIN_FILE <span style="color: #ffcd8b; background-color: #404040;">"$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"</span>
+        CACHE STRING <span style="color: #ffcd8b; background-color: #404040;">""</span><span style="color: #ff8c00;">)</span>
+<span style="color: #808bed;">endif</span><span style="color: #ff8c00;">()</span>
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org3fab33d"></a><code>main.cpp</code><br>
+<div class="outline-text-3" id="text-org3fab33d">
+<p>
+This is very very simple C++ program, it uses <code>fmt</code> and <code>nanorange</code> libraries. Both installed
+via <code>vcpkg</code>. As <code>nanorange</code> is a header only library, we don't necessarily need to add it to 
+<code>CMakeLists.txt</code>.
+</p>
+<div class="org-src-container">
+<pre class="src src-cmake"><span style="color: #cd8b00;">#include &lt;nanorange.hpp&gt;</span>
+<span style="color: #cd8b00;">#include &lt;fmt/core.h&gt;</span>
+<span style="color: #cd8b00;">#include &lt;vector&gt;</span>
+
+using namespace nano;
+
+int <span style="color: #c080d0;">main</span><span style="color: #ff8c00;">()</span>
+<span style="color: #ff8c00;">{</span>
+        auto v = std::vector<span style="color: #ff1493;">{</span> 1, 2, 3, 4, 5, 6 <span style="color: #ff1493;">}</span>;
+        auto r = v | views::reverse;
+
+        <span style="color: #c080d0;">for</span> <span style="color: #ff1493;">(</span>auto &amp;&amp;i : r<span style="color: #ff1493;">)</span>
+        <span style="color: #ff1493;">{</span>
+                fmt::<span style="color: #c080d0;">print</span><span style="color: #7fff00;">(</span><span style="color: #ffcd8b; background-color: #404040;">"{}, "</span>, i<span style="color: #7fff00;">)</span>;
+        <span style="color: #ff1493;">}</span>
+
+        fmt::<span style="color: #c080d0;">print</span><span style="color: #ff1493;">(</span><span style="color: #ffcd8b; background-color: #404040;">"\n{:06.2f}"</span>, 3.14159<span style="color: #ff1493;">)</span>;
+
+        return 0;
+<span style="color: #ff8c00;">}</span>
+</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Neel Raiyani [Roy Fokker]</p>
-<p class="date">Created: 2020-05-09 Sat 21:16</p>
+<p class="date">Created: 2020-05-09 Sat 22:17</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

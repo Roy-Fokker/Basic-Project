@@ -1,16 +1,16 @@
 cmake_minimum_required(VERSION 3.16)
 
-# Attempt to get generator via .cmake file
-include(cmake/ninja.cmake)
-
 # Include vcpkg toolchain file.
 include(cmake/vcpkg.cmake)
+
+# Include MSVC Settings file.
+include(cmake/msvc_settings.cmake)
 
 # Place build output to build/bin directory
 set(EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin/")
 
 # Project name and language
-project (Experiment
+project (Basic_Project
         LANGUAGES CXX)
 
 # Project Configuration Interface
@@ -22,7 +22,6 @@ target_compile_features(project_configuration
         cxx_std_17)
 
 # Load MSVC specific settings
-include(cmake/msvc_settings.cmake)
 set_msvc_project_configuration(project_configuration)
 
 
