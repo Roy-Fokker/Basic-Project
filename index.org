@@ -1,0 +1,4 @@
+#+SETUPFILE: D:\Projects\Web\roy-fokker.github.io\org\header.org
+#+SUBTITLE: Basic CMake Project
+#+OPTIONS: H:1 toc:t num:nil
+

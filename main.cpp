@@ -14,5 +14,7 @@ int main()
 		fmt::print("{}, ", i);
 	}
 
+	fmt::print("\n{:06.2f}", 3.14159);
+
 	return 0;
 }
